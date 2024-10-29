@@ -1,0 +1,300 @@
+{
+    "2024": {
+        "Regular Season - 27": [
+            {
+                "date": "2024-11-02T18:00:00+01:00",
+                "home_team": "VIKING",
+                "away_team": "SANDEFJORD",
+                "home_strength": 0.5348837209302325,
+                "away_strength": 0.18181818181818182,
+                "home_team_elo": 1675.0916869712587,
+                "away_team_elo": 1522.6902007919512
+            },
+            {
+                "date": "2024-11-03T17:00:00+01:00",
+                "home_team": "LILLESTROM",
+                "away_team": "HAUGESUND",
+                "home_strength": 0.4883720930232558,
+                "away_strength": 0.18604651162790697,
+                "home_team_elo": 1533.7017052244514,
+                "away_team_elo": 1514.652184178658
+            },
+            {
+                "date": "2024-11-03T17:00:00+01:00",
+                "home_team": "TROMSO",
+                "away_team": "HAM-KAM",
+                "home_strength": 0.4883720930232558,
+                "away_strength": 0.23255813953488372,
+                "home_team_elo": 1615.2073120399384,
+                "away_team_elo": 1551.6918618758748
+            },
+            {
+                "date": "2024-11-03T17:00:00+01:00",
+                "home_team": "MOLDE",
+                "away_team": "BODO/GLIMT",
+                "home_strength": 0.6511627906976745,
+                "away_strength": 0.627906976744186,
+                "home_team_elo": 1713.0764407191848,
+                "away_team_elo": 1767.0739434211496
+            },
+            {
+                "date": "2024-11-03T17:00:00+01:00",
+                "home_team": "ODD BALLKLUBB",
+                "away_team": "BRANN",
+                "home_strength": 0.4186046511627907,
+                "away_strength": 0.5,
+                "home_team_elo": 1519.1606826638786,
+                "away_team_elo": 1727.313486164627
+            },
+            {
+                "date": "2024-11-03T17:00:00+01:00",
+                "home_team": "KFUM OSLO",
+                "away_team": "SARPSBORG 08 FF",
+                "home_strength": 0.15384615384615385,
+                "away_strength": 0.3488372093023256,
+                "home_team_elo": 1561.9511508417306,
+                "away_team_elo": 1552.0010350725038
+            },
+            {
+                "date": "2024-11-03T17:00:00+01:00",
+                "home_team": "FREDRIKSTAD",
+                "away_team": "KRISTIANSUND BK",
+                "home_strength": 0.46153846153846156,
+                "away_strength": 0.10714285714285714,
+                "home_team_elo": 1601.0094241757527,
+                "away_team_elo": 1503.7308451198298
+            },
+            {
+                "date": "2024-11-03T19:15:00+01:00",
+                "home_team": "ROSENBORG",
+                "away_team": "STROMSGODSET",
+                "home_strength": 0.6511627906976745,
+                "away_strength": 0.23255813953488372,
+                "home_team_elo": 1647.7813091066553,
+                "away_team_elo": 1571.5896574723056
+            }
+        ],
+        "Regular Season - 28": [
+            {
+                "date": "2024-11-09T18:00:00+01:00",
+                "home_team": "BRANN",
+                "away_team": "LILLESTROM",
+                "home_strength": 0.7142857142857143,
+                "away_strength": 0.3488372093023256,
+                "home_team_elo": 1727.313486164627,
+                "away_team_elo": 1533.7017052244514
+            },
+            {
+                "date": "2024-11-10T17:00:00+01:00",
+                "home_team": "KRISTIANSUND BK",
+                "away_team": "VIKING",
+                "home_strength": 0.3103448275862069,
+                "away_strength": 0.3953488372093023,
+                "home_team_elo": 1503.7308451198298,
+                "away_team_elo": 1675.0916869712587
+            },
+            {
+                "date": "2024-11-10T17:00:00+01:00",
+                "home_team": "STROMSGODSET",
+                "away_team": "KFUM OSLO",
+                "home_strength": 0.46511627906976744,
+                "away_strength": 0.46153846153846156,
+                "home_team_elo": 1571.5896574723056,
+                "away_team_elo": 1561.9511508417306
+            },
+            {
+                "date": "2024-11-10T17:00:00+01:00",
+                "home_team": "HAUGESUND",
+                "away_team": "TROMSO",
+                "home_strength": 0.3953488372093023,
+                "away_strength": 0.37209302325581395,
+                "home_team_elo": 1514.652184178658,
+                "away_team_elo": 1615.2073120399384
+            },
+            {
+                "date": "2024-11-10T17:00:00+01:00",
+                "home_team": "SANDEFJORD",
+                "away_team": "ODD BALLKLUBB",
+                "home_strength": 0.3181818181818182,
+                "away_strength": 0.23255813953488372,
+                "home_team_elo": 1522.6902007919512,
+                "away_team_elo": 1519.1606826638786
+            },
+            {
+                "date": "2024-11-10T17:00:00+01:00",
+                "home_team": "SARPSBORG 08 FF",
+                "away_team": "MOLDE",
+                "home_strength": 0.3953488372093023,
+                "away_strength": 0.6046511627906976,
+                "home_team_elo": 1552.0010350725038,
+                "away_team_elo": 1713.0764407191848
+            },
+            {
+                "date": "2024-11-10T17:00:00+01:00",
+                "home_team": "HAM-KAM",
+                "away_team": "ROSENBORG",
+                "home_strength": 0.32558139534883723,
+                "away_strength": 0.27906976744186046,
+                "home_team_elo": 1551.6918618758748,
+                "away_team_elo": 1647.7813091066553
+            },
+            {
+                "date": "2024-11-10T19:15:00+01:00",
+                "home_team": "BODO/GLIMT",
+                "away_team": "FREDRIKSTAD",
+                "home_strength": 0.6744186046511628,
+                "away_strength": 0.46153846153846156,
+                "home_team_elo": 1767.0739434211496,
+                "away_team_elo": 1601.0094241757527
+            }
+        ],
+        "Regular Season - 29": [
+            {
+                "date": "2024-11-23T17:00:00+01:00",
+                "home_team": "LILLESTROM",
+                "away_team": "SANDEFJORD",
+                "home_strength": 0.4883720930232558,
+                "away_strength": 0.18181818181818182,
+                "home_team_elo": 1533.7017052244514,
+                "away_team_elo": 1522.6902007919512
+            },
+            {
+                "date": "2024-11-23T17:00:00+01:00",
+                "home_team": "TROMSO",
+                "away_team": "STROMSGODSET",
+                "home_strength": 0.4883720930232558,
+                "away_strength": 0.23255813953488372,
+                "home_team_elo": 1615.2073120399384,
+                "away_team_elo": 1571.5896574723056
+            },
+            {
+                "date": "2024-11-23T17:00:00+01:00",
+                "home_team": "MOLDE",
+                "away_team": "BRANN",
+                "home_strength": 0.6511627906976745,
+                "away_strength": 0.5,
+                "home_team_elo": 1713.0764407191848,
+                "away_team_elo": 1727.313486164627
+            },
+            {
+                "date": "2024-11-23T17:00:00+01:00",
+                "home_team": "ODD BALLKLUBB",
+                "away_team": "BODO/GLIMT",
+                "home_strength": 0.4186046511627907,
+                "away_strength": 0.627906976744186,
+                "home_team_elo": 1519.1606826638786,
+                "away_team_elo": 1767.0739434211496
+            },
+            {
+                "date": "2024-11-23T17:00:00+01:00",
+                "home_team": "ROSENBORG",
+                "away_team": "SARPSBORG 08 FF",
+                "home_strength": 0.6511627906976745,
+                "away_strength": 0.3488372093023256,
+                "home_team_elo": 1647.7813091066553,
+                "away_team_elo": 1552.0010350725038
+            },
+            {
+                "date": "2024-11-23T17:00:00+01:00",
+                "home_team": "VIKING",
+                "away_team": "HAUGESUND",
+                "home_strength": 0.5348837209302325,
+                "away_strength": 0.18604651162790697,
+                "home_team_elo": 1675.0916869712587,
+                "away_team_elo": 1514.652184178658
+            },
+            {
+                "date": "2024-11-23T17:00:00+01:00",
+                "home_team": "KFUM OSLO",
+                "away_team": "KRISTIANSUND BK",
+                "home_strength": 0.15384615384615385,
+                "away_strength": 0.10714285714285714,
+                "home_team_elo": 1561.9511508417306,
+                "away_team_elo": 1503.7308451198298
+            },
+            {
+                "date": "2024-11-23T17:00:00+01:00",
+                "home_team": "FREDRIKSTAD",
+                "away_team": "HAM-KAM",
+                "home_strength": 0.46153846153846156,
+                "away_strength": 0.23255813953488372,
+                "home_team_elo": 1601.0094241757527,
+                "away_team_elo": 1551.6918618758748
+            }
+        ],
+        "Regular Season - 30": [
+            {
+                "date": "2024-12-01T17:00:00+01:00",
+                "home_team": "BRANN",
+                "away_team": "VIKING",
+                "home_strength": 0.7142857142857143,
+                "away_strength": 0.3953488372093023,
+                "home_team_elo": 1727.313486164627,
+                "away_team_elo": 1675.0916869712587
+            },
+            {
+                "date": "2024-12-01T17:00:00+01:00",
+                "home_team": "KRISTIANSUND BK",
+                "away_team": "ROSENBORG",
+                "home_strength": 0.3103448275862069,
+                "away_strength": 0.27906976744186046,
+                "home_team_elo": 1503.7308451198298,
+                "away_team_elo": 1647.7813091066553
+            },
+            {
+                "date": "2024-12-01T17:00:00+01:00",
+                "home_team": "STROMSGODSET",
+                "away_team": "MOLDE",
+                "home_strength": 0.46511627906976744,
+                "away_strength": 0.6046511627906976,
+                "home_team_elo": 1571.5896574723056,
+                "away_team_elo": 1713.0764407191848
+            },
+            {
+                "date": "2024-12-01T17:00:00+01:00",
+                "home_team": "BODO/GLIMT",
+                "away_team": "LILLESTROM",
+                "home_strength": 0.6744186046511628,
+                "away_strength": 0.3488372093023256,
+                "home_team_elo": 1767.0739434211496,
+                "away_team_elo": 1533.7017052244514
+            },
+            {
+                "date": "2024-12-01T17:00:00+01:00",
+                "home_team": "HAUGESUND",
+                "away_team": "ODD BALLKLUBB",
+                "home_strength": 0.3953488372093023,
+                "away_strength": 0.23255813953488372,
+                "home_team_elo": 1514.652184178658,
+                "away_team_elo": 1519.1606826638786
+            },
+            {
+                "date": "2024-12-01T17:00:00+01:00",
+                "home_team": "SANDEFJORD",
+                "away_team": "FREDRIKSTAD",
+                "home_strength": 0.3181818181818182,
+                "away_strength": 0.46153846153846156,
+                "home_team_elo": 1522.6902007919512,
+                "away_team_elo": 1601.0094241757527
+            },
+            {
+                "date": "2024-12-01T17:00:00+01:00",
+                "home_team": "SARPSBORG 08 FF",
+                "away_team": "TROMSO",
+                "home_strength": 0.3953488372093023,
+                "away_strength": 0.37209302325581395,
+                "home_team_elo": 1552.0010350725038,
+                "away_team_elo": 1615.2073120399384
+            },
+            {
+                "date": "2024-12-01T17:00:00+01:00",
+                "home_team": "HAM-KAM",
+                "away_team": "KFUM OSLO",
+                "home_strength": 0.32558139534883723,
+                "away_strength": 0.46153846153846156,
+                "home_team_elo": 1551.6918618758748,
+                "away_team_elo": 1561.9511508417306
+            }
+        ]
+    }
+}

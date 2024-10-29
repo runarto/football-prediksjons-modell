@@ -1,0 +1,162 @@
+{
+    "Bodo/Glimt": {
+        "position": 1,
+        "played_games": 26,
+        "won": 16,
+        "draw": 6,
+        "lost": 4,
+        "goals_for": 59,
+        "goals_against": 24,
+        "points": 54
+    },
+    "Brann": {
+        "position": 2,
+        "played_games": 26,
+        "won": 15,
+        "draw": 7,
+        "lost": 4,
+        "goals_for": 48,
+        "goals_against": 29,
+        "points": 52
+    },
+    "Molde": {
+        "position": 3,
+        "played_games": 26,
+        "won": 14,
+        "draw": 5,
+        "lost": 7,
+        "goals_for": 57,
+        "goals_against": 29,
+        "points": 47
+    },
+    "Viking": {
+        "position": 4,
+        "played_games": 26,
+        "won": 13,
+        "draw": 8,
+        "lost": 5,
+        "goals_for": 51,
+        "goals_against": 35,
+        "points": 47
+    },
+    "Rosenborg": {
+        "position": 5,
+        "played_games": 26,
+        "won": 13,
+        "draw": 4,
+        "lost": 9,
+        "goals_for": 44,
+        "goals_against": 38,
+        "points": 43
+    },
+    "Fredrikstad": {
+        "position": 6,
+        "played_games": 26,
+        "won": 12,
+        "draw": 7,
+        "lost": 7,
+        "goals_for": 34,
+        "goals_against": 32,
+        "points": 43
+    },
+    "KFUM Oslo": {
+        "position": 7,
+        "played_games": 26,
+        "won": 8,
+        "draw": 10,
+        "lost": 8,
+        "goals_for": 31,
+        "goals_against": 31,
+        "points": 34
+    },
+    "Ham-Kam": {
+        "position": 8,
+        "played_games": 26,
+        "won": 8,
+        "draw": 8,
+        "lost": 10,
+        "goals_for": 31,
+        "goals_against": 31,
+        "points": 32
+    },
+    "Stromsgodset": {
+        "position": 9,
+        "played_games": 26,
+        "won": 8,
+        "draw": 8,
+        "lost": 10,
+        "goals_for": 30,
+        "goals_against": 37,
+        "points": 32
+    },
+    "Kristiansund BK": {
+        "position": 10,
+        "played_games": 26,
+        "won": 7,
+        "draw": 9,
+        "lost": 10,
+        "goals_for": 29,
+        "goals_against": 38,
+        "points": 30
+    },
+    "Tromso": {
+        "position": 11,
+        "played_games": 26,
+        "won": 8,
+        "draw": 5,
+        "lost": 13,
+        "goals_for": 28,
+        "goals_against": 37,
+        "points": 29
+    },
+    "Sarpsborg 08 FF": {
+        "position": 12,
+        "played_games": 26,
+        "won": 8,
+        "draw": 5,
+        "lost": 13,
+        "goals_for": 36,
+        "goals_against": 50,
+        "points": 29
+    },
+    "Sandefjord": {
+        "position": 13,
+        "played_games": 26,
+        "won": 7,
+        "draw": 7,
+        "lost": 12,
+        "goals_for": 35,
+        "goals_against": 42,
+        "points": 28
+    },
+    "Haugesund": {
+        "position": 14,
+        "played_games": 26,
+        "won": 6,
+        "draw": 6,
+        "lost": 14,
+        "goals_for": 23,
+        "goals_against": 40,
+        "points": 24
+    },
+    "Lillestrom": {
+        "position": 15,
+        "played_games": 26,
+        "won": 7,
+        "draw": 3,
+        "lost": 16,
+        "goals_for": 30,
+        "goals_against": 52,
+        "points": 24
+    },
+    "ODD Ballklubb": {
+        "position": 16,
+        "played_games": 26,
+        "won": 5,
+        "draw": 8,
+        "lost": 13,
+        "goals_for": 25,
+        "goals_against": 46,
+        "points": 23
+    }
+}
