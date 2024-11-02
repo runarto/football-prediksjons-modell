@@ -8,6 +8,7 @@ import data_manager
 * TODO: In the simulate games, we need to add the predicted result such that we can include it in the form calculation.
 * This might however cause a serial prediction error, but when simulating a lot of outcomes it might give a better overall prediction.
 * TODO: Fetch games from OBOS-ligaen and generate Elo ratings for the teams in the league. We need to find a method to scale the ratings to take into consideration the level difference.
+* TODO: Take previous head-to-head games into consideration when calculating the probabilities for a specific game.
 ? How can we implement more features on the Elo syste to attempt to make better predictions? 
 """
 
@@ -227,10 +228,14 @@ class EloRatingSystem:
         """Simulate future games N times."""
         all_simulations = []
         true_ratings = self.team_ratings.copy()
+        true_form = self.team_form.copy()
+        true_gains = self.gains.copy()
 
         for _ in range(N):
             team_points = helper.get_table()
             self.team_ratings.update(true_ratings.copy())
+            self.team_form.update(true_form.copy())
+            self.gains.update(true_gains.copy())
 
             for season, rounds in self.future_matches.items():
                 for round_name, matches in rounds.items():
