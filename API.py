@@ -5,7 +5,11 @@ import file
 
 from config import API_TOKEN, ES_ID
 
-def get_previous_matches(seasons, league_id, api_token):
+def get_previous_matches(seasons: list, league_id: int, api_token: str):
+    """
+    Fetches the played matches for the given seasons and league.
+    """
+
     season_matches = {}
 
     for season in seasons:
@@ -26,6 +30,9 @@ def get_previous_matches(seasons, league_id, api_token):
             round_matches = {}
             for fixture in data['response']:
                 round = fixture['league']['round']
+
+                if round == "Relegation Round":
+                    continue
 
                 result = helper.determine_result(fixture)
 
@@ -60,7 +67,10 @@ def get_previous_matches(seasons, league_id, api_token):
     return season_matches
 
 
-def get_future_matches(seasons, league_id, api_token):
+def get_future_matches(seasons: list, league_id: int, api_token: str):
+    """
+    Fetches the future matches for the given seasons and league.
+    """
 
     home_strength = file.load_json_data('jsonfiles/home_strength.json')
     away_strength = file.load_json_data('jsonfiles/away_strength.json')
@@ -123,21 +133,12 @@ def get_future_matches(seasons, league_id, api_token):
     return season_matches
 
 
-def get_eliteserien_table(api_token, league_id, season):
+def get_eliteserien_table(api_token: str, league_id: int, season: str):
     """
-    Fetches the current Eliteserien table from the Football-Data.org API.
-
-    Parameters:
-    - api_token (str): Your API token from Football-Data.org.
-
-    Returns:
-    - dict: A dictionary containing the Eliteserien standings.
-
-    Example:
-    >>> api_token = 'YOUR_API_TOKEN'
-    >>> table = get_eliteserien_table(api_token)
-    >>> print(table)
+    Fetches the current table from the season and league specified by league_id.
     """
+
+ 
     api_url = "https://v3.football.api-sports.io/standings"
     headers = {
             "x-rapidapi-host": "v3.football.api-sports.io",
@@ -190,5 +191,7 @@ def get_eliteserien_table(api_token, league_id, season):
 
 
 
-table = get_eliteserien_table(API_TOKEN, ES_ID, 2024)
-file.write_json_data(table, 'jsonfiles/table.json')
+
+
+
+

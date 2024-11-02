@@ -19,24 +19,24 @@
         "goals_against": 29,
         "points": 52
     },
-    "Molde": {
+    "Viking": {
         "position": 3,
+        "played_games": 27,
+        "won": 14,
+        "draw": 8,
+        "lost": 5,
+        "goals_for": 54,
+        "goals_against": 37,
+        "points": 50
+    },
+    "Molde": {
+        "position": 4,
         "played_games": 26,
         "won": 14,
         "draw": 5,
         "lost": 7,
         "goals_for": 57,
         "goals_against": 29,
-        "points": 47
-    },
-    "Viking": {
-        "position": 4,
-        "played_games": 26,
-        "won": 13,
-        "draw": 8,
-        "lost": 5,
-        "goals_for": 51,
-        "goals_against": 35,
         "points": 47
     },
     "Rosenborg": {
@@ -121,12 +121,12 @@
     },
     "Sandefjord": {
         "position": 13,
-        "played_games": 26,
+        "played_games": 27,
         "won": 7,
         "draw": 7,
-        "lost": 12,
-        "goals_for": 35,
-        "goals_against": 42,
+        "lost": 13,
+        "goals_for": 37,
+        "goals_against": 45,
         "points": 28
     },
     "Haugesund": {
