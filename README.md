@@ -1,0 +1,1 @@
+mangler maskinlæring, da
