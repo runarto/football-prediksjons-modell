@@ -15,7 +15,7 @@ Features:
 """
 
 class EloRatingSystem:
-    def __init__(self, initial_rating=1500, k_factor=10):
+    def __init__(self, initial_rating=1500, k_factor=5):
         self.initial_rating = initial_rating
         self.k_factor = k_factor
         self.DataManager = data_manager.DataManager()
@@ -83,9 +83,9 @@ class EloRatingSystem:
         expected_away = 1 - expected_home
 
         # Determine actual scores
-        if home_score - away_score > 0.1:
+        if home_score - away_score > 0.12:
             actual_home, actual_away = 1, 0
-        elif home_score - away_score < -0.1:
+        elif home_score - away_score < -0.12:
             actual_home, actual_away = 0, 1
         else:
             actual_home = actual_away = 0.5
@@ -125,6 +125,8 @@ class EloRatingSystem:
         sorted_teams = sorted(self.team_ratings.items(), key=lambda x: x[1], reverse=True)
         for team, rating in sorted_teams:
             print(f"{team}: {rating:.2f}")
+
+        self.DataManager.save_json_data(self.team_ratings, 'team_elo.json')
 
     def calculate_match_probabilities(self, rating_home, rating_away, home_advantage, h2h_adjustment=0, theta=200, K=0.22):
         """Calculate match outcome probabilities."""
@@ -343,7 +345,8 @@ class EloRatingSystem:
             all_simulations.append(team_points)
 
         print(f"Simulated {N} remaining outcomes.")
-        print(helper.print_season_outcomes(all_simulations))
+        print(all_simulations)
+        print(helper.print_rank_probability_distribution(all_simulations))
 
     def calculate_specific_game(self, home_team, away_team):
         """Calculate the probabilities for a specific game."""
@@ -369,4 +372,4 @@ class EloRatingSystem:
 
 elo = EloRatingSystem()
 elo.run_elo_rating_system()
-elo.simulate_season_outcome_n_times(1000)
+elo.simulate_season_outcome_n_times(10000)
