@@ -34,6 +34,11 @@ def get_previous_matches(seasons: list, league_id: int, api_token: str):
                 if round == "Relegation Round":
                     continue
 
+                home_team = fixture['teams']['home']['name'].upper()
+                away_team = fixture['teams']['away']['name'].upper()
+                if home_team == "VIKING" and away_team == "SANDEFJORD":
+                    print("breakpoint")
+
                 result = helper.determine_result(fixture)
 
                 result_mapping = {
@@ -97,6 +102,9 @@ def get_future_matches(seasons: list, league_id: int, api_token: str):
                 round = fixture['league']['round']
                 home_team = fixture['teams']['home']['name'].upper()
                 away_team = fixture['teams']['away']['name'].upper()
+
+                if home_team == "VIKING" and away_team == "SANDEFJORD":
+                    print("breakpoint")
 
                 result = helper.determine_result(fixture)
 
@@ -188,10 +196,5 @@ def get_eliteserien_table(api_token: str, league_id: int, season: str):
     else:
         print(f"Failed to retrieve data: {response.status_code} - {response.reason}")
         return None
-
-
-
-
-
 
 

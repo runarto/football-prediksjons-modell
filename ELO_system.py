@@ -5,13 +5,14 @@ import helper
 import data_manager
 
 """
-* TODO: In the simulate games, we need to add the predicted result such that we can include it in the form calculation.
-* This might however cause a serial prediction error, but when simulating a lot of outcomes it might give a better overall prediction.
-* TODO: Fetch games from OBOS-ligaen and generate Elo ratings for the teams in the league. We need to find a method to scale the ratings to take into consideration the level difference.
-* TODO: Take previous head-to-head games into consideration when calculating the probabilities for a specific game.
-? How can we implement more features on the Elo syste to attempt to make better predictions? 
-"""
+This module contains the EloRatingSystem class, which implements an Elo rating system for football predictions.
 
+Features:
+- Processes historical match data to calculate team ratings.
+- Adjusts ratings based on match outcomes, home advantage, and time decay.
+- Incorporates team form and head-to-head adjustments into match probability calculations.
+- Simulates future matches to predict season outcomes.
+"""
 
 class EloRatingSystem:
     def __init__(self, initial_rating=1500, k_factor=10):
@@ -19,7 +20,8 @@ class EloRatingSystem:
         self.k_factor = k_factor
         self.DataManager = data_manager.DataManager()
         self.team_form, self.gains = self.init_form()
-        print(self.gains) 
+        # Uncomment the following line if you want to see the initial gains
+        # print(self.gains)
 
     @property
     def fixtures(self):
@@ -43,18 +45,17 @@ class EloRatingSystem:
 
     def initialize_team_ratings(self):
         """Initialize team ratings with the initial rating."""
-        for team in self.home_strength.keys():
+        for team in self.home_strength:
             self.team_ratings[team] = self.initial_rating
 
     def calculate_expected_score(self, rating_a, rating_b, home_field_advantage):
         """Calculate the expected score for a team."""
         exponent = (rating_b - rating_a + home_field_advantage) / 400
-        expected_score_a = 1 / (1 + 10 ** exponent)
-        return expected_score_a
+        return 1 / (1 + 10 ** exponent)
 
-    def update_rating(self, current_rating, actual_score, expected_score):
+    def update_rating(self, current_rating, actual_score, expected_score, decay_factor):
         """Update the Elo rating for a team."""
-        return current_rating + self.k_factor * (actual_score - expected_score)
+        return current_rating + self.k_factor * decay_factor * (actual_score - expected_score)
 
     def process_game(self, game):
         """Process a single game and update team ratings."""
@@ -62,48 +63,48 @@ class EloRatingSystem:
         away_team = game['away_team']
         home_score = game['score']['home']
         away_score = game['score']['away']
+        match_date = game['date']
 
         # Initialize team ratings if they don't exist
         for team in [home_team, away_team]:
-            if team not in self.team_ratings:
-                self.team_ratings[team] = self.initial_rating
+            self.team_ratings.setdefault(team, self.initial_rating)
 
         # Get current ratings
         rating_home = self.team_ratings[home_team]
         rating_away = self.team_ratings[away_team]
 
-        # Home field advantage
+        # Calculate home field advantage
         hfa = self.home_strength.get(home_team, 0) * 100
         afa = self.away_strength.get(away_team, 0) * 100
-        hfa_adjusted = hfa + (hfa - afa) / 2
+        home_advantage = hfa + (hfa - afa) / 2
 
         # Calculate expected scores
-        expected_home = self.calculate_expected_score(rating_home, rating_away, hfa_adjusted)
-        expected_away = 1 - expected_home  # Expected score for away team
+        expected_home = self.calculate_expected_score(rating_home, rating_away, home_advantage)
+        expected_away = 1 - expected_home
 
         # Determine actual scores
-        if home_score > away_score:
-            actual_home = 1
-            actual_away = 0
-        elif home_score < away_score:
-            actual_home = 0
-            actual_away = 1
+        if home_score - away_score > 0.1:
+            actual_home, actual_away = 1, 0
+        elif home_score - away_score < -0.1:
+            actual_home, actual_away = 0, 1
         else:
-            actual_home = 0.5
-            actual_away = 0.5
+            actual_home = actual_away = 0.5
+
+        # Calculate decay factor
+        decay_factor = helper.get_decay_factor(self.k_factor, match_date)
 
         # Update ratings
-        new_rating_home = self.update_rating(rating_home, actual_home, expected_home)
-        new_rating_away = self.update_rating(rating_away, actual_away, expected_away)
+        new_rating_home = self.update_rating(rating_home, actual_home, expected_home, decay_factor)
+        new_rating_away = self.update_rating(rating_away, actual_away, expected_away, decay_factor)
 
         # Save updated ratings
         self.team_ratings[home_team] = new_rating_home
         self.team_ratings[away_team] = new_rating_away
 
-        # Print match result and rating updates (optional)
-        print(f"    {home_team} {home_score} - {away_score} {away_team}")
-        print(f"      {home_team} rating: {rating_home:.2f} -> {new_rating_home:.2f}")
-        print(f"      {away_team} rating: {rating_away:.2f} -> {new_rating_away:.2f}")
+        # Optional: Print match result and rating updates
+        # print(f"{home_team} {home_score} - {away_score} {away_team}")
+        # print(f"{home_team} rating: {rating_home:.2f} -> {new_rating_home:.2f}")
+        # print(f"{away_team} rating: {rating_away:.2f} -> {new_rating_away:.2f}")
 
     def process_round(self, games_list):
         """Process all games in a round."""
@@ -113,9 +114,7 @@ class EloRatingSystem:
     def process_season(self):
         """Process all seasons in the fixtures."""
         for season, season_data in self.fixtures.items():
-            print(f"Processing Season: {season}")
             for round_name, games_list in season_data.items():
-                print(f"  Processing Round: {round_name}")
                 self.process_round(games_list)
 
     def run_elo_rating_system(self):
@@ -123,17 +122,18 @@ class EloRatingSystem:
         self.initialize_team_ratings()
         self.process_season()
         print("\nFinal Team Ratings:")
-        for team, rating in sorted(self.team_ratings.items(), key=lambda x: x[1], reverse=True):
+        sorted_teams = sorted(self.team_ratings.items(), key=lambda x: x[1], reverse=True)
+        for team, rating in sorted_teams:
             print(f"{team}: {rating:.2f}")
 
-    def calculate_match_probabilities(self, rating_home, rating_away, home_advantage, theta=200, K=0.22):
+    def calculate_match_probabilities(self, rating_home, rating_away, home_advantage, h2h_adjustment=0, theta=200, K=0.22):
         """Calculate match outcome probabilities."""
-        delta_R = rating_home + home_advantage - rating_away
-        exp_positive = math.exp(delta_R / theta)
-        exp_negative = math.exp(-delta_R / theta)
-        denominator = exp_positive + exp_negative + K
-        prob_home_win = exp_positive / denominator
-        prob_away_win = exp_negative / denominator
+        delta_R = rating_home + home_advantage + h2h_adjustment - rating_away
+        exp_pos = math.exp(delta_R / theta)
+        exp_neg = math.exp(-delta_R / theta)
+        denominator = exp_pos + exp_neg + K
+        prob_home_win = exp_pos / denominator
+        prob_away_win = exp_neg / denominator
         prob_draw = K / denominator
         return {
             'home_win': prob_home_win,
@@ -142,78 +142,72 @@ class EloRatingSystem:
         }
 
     def init_form(self):
-        """Calculate the form of each team based on recent performance."""
-        # Initialize form tracking
-        form = {team: deque(maxlen=3) for team in self.team_ratings.keys()}
-
-        temp_ratings = self.team_ratings.copy()
+        """Calculate the initial form of each team based on recent performance."""
+        # Initialize form tracking deques for each team
+        form_deques = {team: deque(maxlen=3) for team in self.team_ratings}
 
         for season, rounds in self.fixtures.items():
-
             for round_name, matches in rounds.items():
                 for match in matches:
                     home_team = match['home_team']
                     away_team = match['away_team']
 
-                    initial_elo_home = self.team_ratings[home_team]
-                    initial_elo_away = self.team_ratings[away_team]
+                    initial_rating_home = self.team_ratings[home_team]
+                    initial_rating_away = self.team_ratings[away_team]
 
                     self.process_game(match)
 
-                    home_gain = self.team_ratings[home_team] - initial_elo_home
-                    away_gain = self.team_ratings[away_team] - initial_elo_away
+                    # Calculate gains
+                    gain_home = self.team_ratings[home_team] - initial_rating_home
+                    gain_away = self.team_ratings[away_team] - initial_rating_away
 
-                    # Reset team ratings to true values:
-                    self.team_ratings[home_team] = initial_elo_home
-                    self.team_ratings[away_team] = initial_elo_away
+                    # Reset team ratings to initial values
+                    self.team_ratings[home_team] = initial_rating_home
+                    self.team_ratings[away_team] = initial_rating_away
 
-                    # Update temp ratings with form gains
-                    temp_ratings[home_team] = self.team_ratings[home_team] + home_gain
-                    temp_ratings[away_team] = self.team_ratings[away_team] + away_gain
+                    # Append gains to form deques
+                    form_deques[home_team].append(gain_home)
+                    form_deques[away_team].append(gain_away)
 
-                    form[home_team].append(home_gain)
-                    form[away_team].append(away_gain)
-
-        # Calculate weighted form
-        weights = [math.log(i**2 + 1) for i in range(1, 4)]
+        # Calculate weighted form for each team
+        weights = [math.log(i ** 2 + 1) for i in range(1, 4)]
         total_weight = sum(weights)
         normalized_weights = [w / total_weight for w in weights]
 
-        team_gains = {team: deque(maxlen=3) for team in self.team_ratings.keys()}
+        team_form = {}
+        team_gains = {}
 
-        for team in self.team_ratings.keys():
-            gains = list(form[team])
-            team_gains[team] = gains
+        for team in self.team_ratings:
+            gains = list(form_deques[team])
+            team_gains[team] = gains.copy()
+
+            # Pad gains with zeros if less than 3 games
             if len(gains) < 3:
-                gains = [0] * (3 - len(gains)) + gains  # Pad with zeros if less than 5 games
-            weighted_sum = sum(gain * weight for gain, weight in zip(gains, normalized_weights))
-            form[team] = weighted_sum
+                gains = [0] * (3 - len(gains)) + gains
 
-        # Print team forms (optional)
-        for team, form_value in form.items():
-            print(f"{team}: Form = {form_value:.2f}")
+            # Calculate weighted sum
+            weighted_sum = sum(g * w for g, w in zip(gains, normalized_weights))
+            team_form[team] = weighted_sum
 
-        print(form)
-        print(gains)
-        return form, team_gains
-    
+        return team_form, team_gains
+
     def update_form(self, match, home_team, away_team):
-        """Update the form of a team."""
-
-        initial_elo_home = self.team_ratings[home_team]
-        initial_elo_away = self.team_ratings[away_team]
+        """Update the form of teams after a match."""
+        initial_rating_home = self.team_ratings[home_team]
+        initial_rating_away = self.team_ratings[away_team]
 
         self.process_game(match)
 
-        home_gain = self.team_ratings[home_team] - initial_elo_home
-        away_gain = self.team_ratings[away_team] - initial_elo_away
+        # Calculate gains
+        gain_home = self.team_ratings[home_team] - initial_rating_home
+        gain_away = self.team_ratings[away_team] - initial_rating_away
 
-        # Add the gains to the form tracking
-        self.gains[home_team].append(home_gain)
-        self.gains[away_team].append(away_gain)
+        # Append gains to gains deques
+        self.gains[home_team].append(gain_home)
+        self.gains[away_team].append(gain_away)
 
-        # Calculate weighted form
-        weights = [math.log(i**2 + 1) for i in range(1, 4)]
+        # Recalculate team form
+        weights = [math.log(i ** 2 + 1) for i in range(1, 4)]
         total_weight = sum(weights)
         normalized_weights = [w / total_weight for w in weights]
 
@@ -221,21 +215,27 @@ class EloRatingSystem:
             gains = list(self.gains[team])
             if len(gains) < 3:
                 gains = [0] * (3 - len(gains)) + gains
-            weighted_sum = sum(gain * weight for gain, weight in zip(gains, normalized_weights))
+            weighted_sum = sum(g * w for g, w in zip(gains, normalized_weights))
             self.team_form[team] = weighted_sum
-        
+
     def simulate_season_outcome_n_times(self, N=1000):
         """Simulate future games N times."""
         all_simulations = []
+
+        # Store the true values to reset after each simulation
         true_ratings = self.team_ratings.copy()
         true_form = self.team_form.copy()
-        true_gains = self.gains.copy()
+        true_gains = {team: deque(self.gains[team], maxlen=3) for team in self.gains}
 
-        for _ in range(N):
+        for sim_number in range(1, N + 1):
+            # Reset ratings, form, and gains to true values
+            temp_ratings = true_ratings.copy()
+            temp_form = true_form.copy()
+            temp_gains = {team: deque(true_gains[team], maxlen=3) for team in true_gains}
+
             team_points = helper.get_table()
-            self.team_ratings.update(true_ratings.copy())
-            self.team_form.update(true_form.copy())
-            self.gains.update(true_gains.copy())
+
+            print(f"Simulating outcome {sim_number}/{N}...")
 
             for season, rounds in self.future_matches.items():
                 for round_name, matches in rounds.items():
@@ -243,82 +243,128 @@ class EloRatingSystem:
                         home_team = match['home_team']
                         away_team = match['away_team']
 
-                        home_rating = self.team_ratings[home_team] + self.team_form[home_team]*5
-                        away_rating = self.team_ratings[away_team] + self.team_form[away_team]*5
+                        # Get H2H adjustment
+                        adjustment_factor = self.DataManager.get_h2h_adjustment(home_team, away_team, self.k_factor)
 
-                        # Home field advantage
-                        hfa = self.home_strength[home_team] * 100
-                        afa = self.away_strength[away_team] * 100
-                        home_advantage = hfa - (afa - hfa) / 2
+                        # Calculate adjusted ratings
+                        home_rating = temp_ratings[home_team] + temp_form.get(home_team, 0) * 5
+                        away_rating = temp_ratings[away_team] + temp_form.get(away_team, 0) * 5
 
-                        probabilities = self.calculate_match_probabilities(home_rating, away_rating, home_advantage)
-                        prob_home_win = probabilities['home_win']
-                        prob_draw = probabilities['draw']
-                        prob_away_win = probabilities['away_win']
+                        # Calculate home advantage
+                        hfa = self.home_strength.get(home_team, 0) * 100
+                        afa = self.away_strength.get(away_team, 0) * 100
+                        home_advantage = hfa + (hfa - afa) / 2
+
+                        # Calculate match probabilities
+                        probabilities = self.calculate_match_probabilities(
+                            home_rating, away_rating, home_advantage, adjustment_factor
+                        )
 
                         # Simulate match outcome
                         rand = random.random()
-                        if rand < prob_home_win:
+                        if rand < probabilities['home_win']:
                             team_points[home_team] += 3
-                            match = {
+                            simulated_match = {
+                                'date': match['date'],
                                 'home_team': home_team,
                                 'away_team': away_team,
                                 'score': {'home': 2, 'away': 1},
                                 'result': 'Home'
                             }
-
-                            self.update_form(match, home_team, away_team)
-
-                            
-                        elif rand < prob_home_win + prob_draw:
+                        elif rand < probabilities['home_win'] + probabilities['draw']:
                             team_points[home_team] += 1
                             team_points[away_team] += 1
-
-                            match = {
+                            simulated_match = {
+                                'date': match['date'],
                                 'home_team': home_team,
                                 'away_team': away_team,
                                 'score': {'home': 1, 'away': 1},
                                 'result': 'Draw'
                             }
-
-                            self.update_form(match, home_team, away_team)
-
-                            
                         else:
                             team_points[away_team] += 3
-
-                            match = {
+                            simulated_match = {
+                                'date': match['date'],
                                 'home_team': home_team,
                                 'away_team': away_team,
                                 'score': {'home': 1, 'away': 2},
                                 'result': 'Away'
                             }
 
-                            self.update_form(match, home_team, away_team)
+                        # Update ratings and form using the simulated match
+                        # Update temp_ratings and temp_form instead of instance variables
+                        initial_rating_home = temp_ratings[home_team]
+                        initial_rating_away = temp_ratings[away_team]
+
+                        # Process game to update ratings
+                        expected_home = self.calculate_expected_score(home_rating, away_rating, home_advantage)
+                        expected_away = 1 - expected_home
+
+                        # Determine actual scores from simulated result
+                        if simulated_match['result'] == 'Home':
+                            actual_home, actual_away = 1, 0
+                        elif simulated_match['result'] == 'Draw':
+                            actual_home = actual_away = 0.5
+                        else:
+                            actual_home, actual_away = 0, 1
+
+                        # Update ratings
+                        decay_factor = helper.get_decay_factor(self.k_factor, simulated_match['date'])
+                        new_rating_home = self.update_rating(
+                            temp_ratings[home_team], actual_home, expected_home, decay_factor
+                        )
+                        new_rating_away = self.update_rating(
+                            temp_ratings[away_team], actual_away, expected_away, decay_factor
+                        )
+
+                        temp_ratings[home_team] = new_rating_home
+                        temp_ratings[away_team] = new_rating_away
+
+                        # Calculate gains
+                        gain_home = new_rating_home - initial_rating_home
+                        gain_away = new_rating_away - initial_rating_away
+
+                        # Update gains
+                        temp_gains[home_team].append(gain_home)
+                        temp_gains[away_team].append(gain_away)
+
+                        # Recalculate team form
+                        weights = [math.log(i ** 2 + 1) for i in range(1, 4)]
+                        total_weight = sum(weights)
+                        normalized_weights = [w / total_weight for w in weights]
+
+                        for team in [home_team, away_team]:
+                            gains = list(temp_gains[team])
+                            if len(gains) < 3:
+                                gains = [0] * (3 - len(gains)) + gains
+                            weighted_sum = sum(g * w for g, w in zip(gains, normalized_weights))
+                            temp_form[team] = weighted_sum
 
             all_simulations.append(team_points)
 
         print(f"Simulated {N} remaining outcomes.")
         print(helper.print_season_outcomes(all_simulations))
-        
+
     def calculate_specific_game(self, home_team, away_team):
-        
         """Calculate the probabilities for a specific game."""
         home_rating = self.team_ratings.get(home_team, self.initial_rating) + self.team_form.get(home_team, 0)
         away_rating = self.team_ratings.get(away_team, self.initial_rating) + self.team_form.get(away_team, 0)
 
         hfa = self.home_strength.get(home_team, 0) * 100
         afa = self.away_strength.get(away_team, 0) * 100
-        home_advantage = hfa - (afa - hfa) / 2
+        home_advantage = hfa + (hfa - afa) / 2
 
-        probabilities = self.calculate_match_probabilities(home_rating, away_rating, home_advantage)
+        adjustment_factor = self.DataManager.get_h2h_adjustment(home_team, away_team, self.k_factor)
+
+        probabilities = self.calculate_match_probabilities(
+            home_rating, away_rating, home_advantage, adjustment_factor
+        )
 
         # Print the probabilities
         print(f"Probabilities for {home_team} vs {away_team}:")
         print(f"  Home Win: {probabilities['home_win'] * 100:.2f}%")
         print(f"  Draw: {probabilities['draw'] * 100:.2f}%")
         print(f"  Away Win: {probabilities['away_win'] * 100:.2f}%")
-
 
 
 elo = EloRatingSystem()

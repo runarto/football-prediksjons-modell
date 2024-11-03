@@ -1,5 +1,7 @@
 import file
 from collections import defaultdict
+import math
+from datetime import datetime
 
 
 def determine_result(fixture):
@@ -97,3 +99,37 @@ def print_season_outcomes(simulated_seasons):
                 break
 
 
+
+def get_match_result(game, team):
+    """Get the match result from the perspective of the given team."""
+    home_team = game['home_team']
+    away_team = game['away_team']
+    home_score = game['score']['home']
+    away_score = game['score']['away']
+
+    if home_team == team:
+        team_goals = home_score
+        opponent_goals = away_score
+    elif away_team == team:
+        team_goals = away_score
+        opponent_goals = home_score
+    else:
+        return 0  # The team did not participate in this match
+
+    if team_goals > opponent_goals:
+        return 1  # Win
+    elif team_goals < opponent_goals:
+        return -1  # Loss
+    else:
+        return 0  # Draw
+
+
+def get_decay_factor(k_factor, game_date_str):
+    """Calculate a decayed K-factor based on the game's age."""
+    game_date = datetime.fromisoformat(game_date_str)
+    game_date = game_date.date()
+    current_date = datetime.now().date()
+    age_in_days = (current_date - game_date).days
+    lambda_decay = 0.001
+    decay_factor = math.exp(-lambda_decay * age_in_days)
+    return k_factor * decay_factor

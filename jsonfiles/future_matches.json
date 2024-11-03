@@ -2,15 +2,6 @@
     "2024": {
         "Regular Season - 27": [
             {
-                "date": "2024-11-02T18:00:00+01:00",
-                "home_team": "VIKING",
-                "away_team": "SANDEFJORD",
-                "home_strength": 0.5348837209302325,
-                "away_strength": 0.18181818181818182,
-                "home_team_elo": 1675.0916869712587,
-                "away_team_elo": 1522.6902007919512
-            },
-            {
                 "date": "2024-11-03T17:00:00+01:00",
                 "home_team": "LILLESTROM",
                 "away_team": "HAUGESUND",
