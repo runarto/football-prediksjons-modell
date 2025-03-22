@@ -2142,6 +2142,66 @@
                     "away": 2
                 },
                 "result": "Home"
+            },
+            {
+                "date": "2024-11-03T17:00:00+01:00",
+                "home_team": "LILLESTROM",
+                "away_team": "HAUGESUND",
+                "score": {
+                    "home": 0,
+                    "away": 1
+                },
+                "result": "Away"
+            },
+            {
+                "date": "2024-11-03T17:00:00+01:00",
+                "home_team": "TROMSO",
+                "away_team": "HAM-KAM",
+                "score": {
+                    "home": 3,
+                    "away": 3
+                },
+                "result": "Draw"
+            },
+            {
+                "date": "2024-11-03T17:00:00+01:00",
+                "home_team": "MOLDE",
+                "away_team": "BODO/GLIMT",
+                "score": {
+                    "home": 3,
+                    "away": 3
+                },
+                "result": "Draw"
+            },
+            {
+                "date": "2024-11-03T17:00:00+01:00",
+                "home_team": "ODD BALLKLUBB",
+                "away_team": "BRANN",
+                "score": {
+                    "home": 0,
+                    "away": 3
+                },
+                "result": "Away"
+            },
+            {
+                "date": "2024-11-03T17:00:00+01:00",
+                "home_team": "KFUM OSLO",
+                "away_team": "SARPSBORG 08 FF",
+                "score": {
+                    "home": 1,
+                    "away": 2
+                },
+                "result": "Away"
+            },
+            {
+                "date": "2024-11-03T17:00:00+01:00",
+                "home_team": "FREDRIKSTAD",
+                "away_team": "KRISTIANSUND BK",
+                "score": {
+                    "home": 1,
+                    "away": 1
+                },
+                "result": "Draw"
             }
         ]
     },

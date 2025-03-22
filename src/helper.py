@@ -1,8 +1,7 @@
-import file
 from collections import defaultdict
 import math
 from datetime import datetime
-import textwrap
+import sqlite3
 
 
 def determine_result(fixture):
@@ -17,32 +16,43 @@ def determine_result(fixture):
         return False
     else:
         return None 
-    
 
-def percentage_of_draws():
-    fixtures = file.load_json_data('jsonfiles/fixtures.json')
-    draws = 0
-    total_games = 0
+def percentage_of_draws(league_id: int) -> float:
+    conn = sqlite3.connect("football.db")
+    c = conn.cursor()
 
-    for season, rounds in fixtures.items():
-        for round, matches in rounds.items():
-            for match in matches:
-                result = match['result']
-                total_games += 1
-                if result == 'Draw':
-                    draws += 1
+    c.execute("""
+        SELECT COUNT(*) FROM matches
+        WHERE league_id = ?
+    """, (league_id,))
+    total_games = c.fetchone()[0]
 
-    return draws / total_games
+    c.execute("""
+        SELECT COUNT(*) FROM matches
+        WHERE league_id = ? AND result = 'Draw'
+    """, (league_id,))
+    draws = c.fetchone()[0]
 
+    conn.close()
 
-def get_table():
+    return draws / total_games if total_games else 0.0
+
+def get_table(league_id: int):
     standings = {}
-    table = file.load_json_data('jsonfiles/table.json')
-    for team, info in table.items():
-        standings[team.upper()] = info.get('points')
+    conn = sqlite3.connect("football.db")
+    c = conn.cursor()
 
+    c.execute("""
+        SELECT team, points FROM table_standings
+        WHERE league_id = ?
+    """, (league_id,))
+
+    for row in c.fetchall():
+        team, points = row
+        standings[team.upper()] = points
+
+    conn.close()
     return standings
-
 
 def analyze_simulations(all_simulations):
     # Step 1: Aggregate Position Counts
@@ -69,9 +79,6 @@ def analyze_simulations(all_simulations):
 
     return position_probabilities
 
-
-
-
 def get_match_result(game, team):
     """Get the match result from the perspective of the given team."""
     home_team = game['home_team']
@@ -95,7 +102,6 @@ def get_match_result(game, team):
     else:
         return 0  # Draw
 
-
 def get_decay_factor(k_factor, game_date_str):
     """Calculate a decayed K-factor based on the game's age."""
     game_date = datetime.fromisoformat(game_date_str)
@@ -105,8 +111,6 @@ def get_decay_factor(k_factor, game_date_str):
     lambda_decay = 0.0075
     decay_factor = math.exp(-lambda_decay * age_in_days)
     return k_factor * decay_factor
-
-
 
 def print_rank_probability_distribution(data):
     data = analyze_simulations(data)
