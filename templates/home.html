@@ -1,0 +1,21 @@
+<!-- templates/home.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Football Predictor</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <h1>⚽ Football League Simulation</h1>
+  <h2>Select a League</h2>
+  <ul>
+    {% for id, name in leagues.items() %}
+      <li>
+        <a href="{{ url_for('league_overview', league_id=id) }}">{{ name }} (ID: {{ id }})</a>
+      </li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
+

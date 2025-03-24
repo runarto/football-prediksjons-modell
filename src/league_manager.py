@@ -1,4 +1,4 @@
-from elo_system import EloRatingSystem
+from .elo_system import EloRatingSystem
 
 class LeagueManager:
     def __init__(self, league_ids):

@@ -1,0 +1,32 @@
+<!-- templates/leaderboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ league_name }} Leaderboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <h1>{{ league_name }} – Elo Rankings</h1>
+  <a href="/">← Back to Home</a>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Team</th>
+        <th>Elo Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for team, rating in leaderboard %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ team }}</td>
+          <td>{{ rating | round(2) }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

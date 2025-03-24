@@ -2,6 +2,7 @@ from collections import defaultdict
 import math
 from datetime import datetime
 import sqlite3
+from datetime import date
 
 
 def determine_result(fixture):
@@ -102,15 +103,15 @@ def get_match_result(game, team):
     else:
         return 0  # Draw
 
-def get_decay_factor(k_factor, game_date_str):
-    """Calculate a decayed K-factor based on the game's age."""
-    game_date = datetime.fromisoformat(game_date_str)
-    game_date = game_date.date()
-    current_date = datetime.now().date()
-    age_in_days = (current_date - game_date).days
-    lambda_decay = 0.0075
-    decay_factor = math.exp(-lambda_decay * age_in_days)
-    return k_factor * decay_factor
+
+
+def get_decay_factor(k_factor, game_date_str, use_fixed_reference_date=False):
+    game_date = datetime.fromisoformat(game_date_str).date()
+    reference_date = date(2024, 12, 10) if use_fixed_reference_date else datetime.now().date()
+    days = max((reference_date - game_date).days, 1)
+    return k_factor / math.log(days + 10)
+
+
 
 def print_rank_probability_distribution(data):
     data = analyze_simulations(data)

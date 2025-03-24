@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ league_name }} Overview</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <h1>{{ league_name }} (ID: {{ league_id }})</h1>
+  <a href="/">← Back to Home</a>
+
+  <h2>Actions</h2>
+  <ul>
+    <li><a href="{{ url_for('fetch_data', league_id=league_id) }}">🔄 Fetch Data from API</a></li>
+    <li><a href="{{ url_for('generate_elo', league_id=league_id) }}">📊 Generate Elo Ratings</a></li>
+    <li><a href="{{ url_for('simulate_season', league_id=league_id) }}">🎲 Simulate Season</a></li>
+  </ul>
+
+  <p>Once you've fetched the data and generated Elo ratings, you'll be able to simulate the season and view ranking predictions.</p>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!-- templates/simulation_result.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulation Result – {{ league_name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>{{ league_name }} – Simulation Outcome</h1>
+  <a href="/">← Back to Home</a>
+
+  <canvas id="myChart" width="800" height="400"></canvas>
+  <p>This chart displays the simulated ranking or points distribution after N runs.</p>
+
+  <script>
+    // Safely parse the Jinja2-generated JSON strings
+    const simulationLabels = JSON.parse('{{ labels | tojson | safe }}');
+    const simulationData = JSON.parse('{{ data | tojson | safe }}');
+  
+    const ctx = document.getElementById("myChart").getContext("2d");
+    const myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: simulationLabels,
+        datasets: [{
+          label: 'Avg Points (Simulated)',
+          data: simulationData,
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Simulated Points per Team'
+          }
+        }
+      }
+    });
+  
+    // Debug output in console
+    console.log("Labels:", simulationLabels);
+    console.log("Data:", simulationData);
+  </script>
+  
+</body>
+</html>

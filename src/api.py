@@ -1,137 +1,133 @@
 import requests
-import helper
-from migration import migrate_fixtures_to_sqlite, migrate_future_to_sqlite
-import data_manager
-from config import API_TOKEN
+import re
+from . import helper
+from .migration import migrate_fixtures_to_sqlite, migrate_future_to_sqlite
+from . import data_manager
+from .config import API_TOKEN
 
-def get_previous_matches(seasons: list, league_id: int):
-    season_matches = {}
+NORWAY_LEAGUES = [103, 104]
 
-    for season in seasons:
-        api_url = "https://v3.football.api-sports.io/fixtures"
-        headers = {
-            "x-rapidapi-host": "v3.football.api-sports.io",
-            "x-rapidapi-key": API_TOKEN
-        }
-        query_fixtures = {
-            "league": league_id,
-            "season": season,
-            "timezone": "Europe/Oslo",
-        }
 
-        response = requests.get(api_url, headers=headers, params=query_fixtures)
-        if response.status_code == 200:
-            data = response.json()
-            round_matches = {}
-            for fixture in data['response']:
-                round = fixture['league']['round']
-                if round == "Relegation Round":
-                    continue
+def clean_round_label(round_str: str) -> str | None:
+    """
+    Extracts the numeric round from a round string.
+    Skips rounds related to promotion/relegation play-offs.
+    """
+    if any(x in round_str for x in ["Play-off", "Relegation"]):
+        return None
+    match = re.search(r"(\d+)$", round_str)
+    return match.group(1) if match else round_str
 
-                home_team = fixture['teams']['home']['name'].upper()
-                away_team = fixture['teams']['away']['name'].upper()
 
-                result = helper.determine_result(fixture)
-                result_mapping = {"NaN": "NaN", True: "Home", False: "Away", None: "Draw"}
-                result = result_mapping[result]
-                if result == "NaN":
-                    continue
+def get_previous_matches(seasons: list, country_league_ids: list = NORWAY_LEAGUES):
+    for league_id in country_league_ids:
+        season_matches = {}
 
-                match_info = {
-                    'date': fixture['fixture']['date'],
-                    'home_team': home_team,
-                    'away_team': away_team,
-                    'score': fixture['score']['fulltime'],
-                    'result': result
-                }
-                round_matches.setdefault(round, []).append(match_info)
+        for season in seasons:
+            api_url = "https://v3.football.api-sports.io/fixtures"
+            headers = {
+                "x-rapidapi-host": "v3.football.api-sports.io",
+                "x-rapidapi-key": API_TOKEN
+            }
+            query_fixtures = {
+                "league": league_id,
+                "season": season,
+                "timezone": "Europe/Oslo",
+            }
 
-            season_matches[season] = round_matches
-        else:
-            print(f"Failed to fetch data for season {season}: {response.status_code}")
+            response = requests.get(api_url, headers=headers, params=query_fixtures)
+            if response.status_code == 200:
+                data = response.json()
+                round_matches = {}
+                for fixture in data['response']:
+                    raw_round = fixture['league']['round']
+                    gw = clean_round_label(raw_round)
 
-    migrate_fixtures_to_sqlite(league_id, season_matches)
-    return season_matches
+                    if gw is None:
+                        continue
 
-def get_future_matches(seasons: list, league_id: int):
+                    home_team = fixture['teams']['home']['name'].upper()
+                    away_team = fixture['teams']['away']['name'].upper()
 
-    dm = data_manager.DataManager(league_id)
+                    result = helper.determine_result(fixture)
+                    result_mapping = {"NaN": "NaN", True: "Home", False: "Away", None: "Draw"}
+                    result = result_mapping[result]
+        
+                    if result == "NaN":
+                        continue
+
+                    match_info = {
+                        'date': fixture['fixture']['date'],
+                        'season': season,
+                        'league_id': league_id,
+                        'home_team': home_team,
+                        'away_team': away_team,
+                        'score': fixture['score']['fulltime'],
+                        'result': result
+                    }
+
+                    round_matches.setdefault(gw, []).append(match_info)
+
+                season_matches[season] = round_matches
+            else:
+                print(f"Failed to fetch data for season {season} (league {league_id}): {response.status_code}")
+
+        migrate_fixtures_to_sqlite(league_id, season_matches)
+
+
+def get_future_matches(seasons: list, country_league_ids: list = NORWAY_LEAGUES):
+    dm = data_manager.DataManager(country_league_ids)
     home_strength = dm.get_team_strengths()
-    away_strength = home_strength  # same source
+    away_strength = home_strength
     elo = dm.get_team_elos()
 
-    season_matches = {}
-    for season in seasons:
-        api_url = "https://v3.football.api-sports.io/fixtures"
-        headers = {
-            "x-rapidapi-host": "v3.football.api-sports.io",
-            "x-rapidapi-key": API_TOKEN
-        }
-        query_fixtures = {
-            "league": league_id,
-            "season": season,
-            "timezone": "Europe/Oslo",
-        }
+    for league_id in country_league_ids:
+        season_matches = {}
+        for season in seasons:
+            api_url = "https://v3.football.api-sports.io/fixtures"
+            headers = {
+                "x-rapidapi-host": "v3.football.api-sports.io",
+                "x-rapidapi-key": API_TOKEN
+            }
+            query_fixtures = {
+                "league": league_id,
+                "season": season,
+                "timezone": "Europe/Oslo",
+            }
 
-        response = requests.get(api_url, headers=headers, params=query_fixtures)
-        if response.status_code == 200:
-            data = response.json()
-            round_matches = {}
-            for fixture in data['response']:
-                round = fixture['league']['round']
-                home_team = fixture['teams']['home']['name'].upper()
-                away_team = fixture['teams']['away']['name'].upper()
+            response = requests.get(api_url, headers=headers, params=query_fixtures)
+            if response.status_code == 200:
+                data = response.json()
+                round_matches = {}
+                for fixture in data['response']:
+                    raw_round = fixture['league']['round']
+                    gw = clean_round_label(raw_round)
+                    if gw is None:
+                        continue
 
-                result = helper.determine_result(fixture)
-                result_mapping = {"NaN": "NaN", True: "Home", False: "Away", None: "Draw"}
-                if result_mapping[result] != "NaN":
-                    continue
+                    home_team = fixture['teams']['home']['name'].upper()
+                    away_team = fixture['teams']['away']['name'].upper()
 
-                match_info = {
-                    'date': fixture['fixture']['date'],
-                    'home_team': home_team,
-                    'away_team': away_team,
-                    'home_strength': home_strength.get(home_team, {}).get("home", 1),
-                    'away_strength': away_strength.get(away_team, {}).get("away", 1),
-                    'home_team_elo': elo.get(home_team, 1500),
-                    'away_team_elo': elo.get(away_team, 1500)
-                }
-                round_matches.setdefault(round, []).append(match_info)
+                    result = helper.determine_result(fixture)
+                    result_mapping = {"NaN": "NaN", True: "Home", False: "Away", None: "Draw"}
+                    if result_mapping[result] != "NaN":
+                        continue
 
-            season_matches[season] = round_matches
-        else:
-            print(f"Failed to fetch data for season {season}: {response.status_code}")
+                    match_info = {
+                        'date': fixture['fixture']['date'],
+                        'season': season,
+                        'league_id': league_id,
+                        'home_team': home_team,
+                        'away_team': away_team,
+                        'home_strength': home_strength.get(home_team, {}).get("home", 1),
+                        'away_strength': away_strength.get(away_team, {}).get("away", 1),
+                        'home_team_elo': elo.get(home_team, 1500),
+                        'away_team_elo': elo.get(away_team, 1500)
+                    }
+                    round_matches.setdefault(gw, []).append(match_info)
 
-    migrate_future_to_sqlite(league_id, season_matches)
-    return season_matches
+                season_matches[season] = round_matches
+            else:
+                print(f"Failed to fetch future data for season {season} (league {league_id}): {response.status_code}")
 
-def get_league_table(league_id: int, season: str):
-    import sqlite3
-    conn = sqlite3.connect("football.db")
-    c = conn.cursor()
-
-    c.execute("""
-        SELECT team, position, played_games, won, draw, lost,
-               goals_for, goals_against, points
-        FROM table_standings
-        WHERE league_id = ?
-        ORDER BY position ASC
-    """, (league_id,))
-
-    result = c.fetchall()
-    conn.close()
-
-    table = {}
-    for row in result:
-        table[row[0]] = {
-            'position': row[1],
-            'played_games': row[2],
-            'won': row[3],
-            'draw': row[4],
-            'lost': row[5],
-            'goals_for': row[6],
-            'goals_against': row[7],
-            'points': row[8]
-        }
-
-    return table
+        migrate_future_to_sqlite(league_id, season_matches)

@@ -1,8 +1,8 @@
 import random
 import math
 from collections import deque
-import helper
-from elo_system import EloRatingSystem
+from . import helper
+from .elo_system import EloRatingSystem
 
 class Simulator:
     def __init__(self, league_id):
